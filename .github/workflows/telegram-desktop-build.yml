@@ -23,6 +23,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
+      - name: Initialize metroproto submodule
+        shell: bash
+        run: git submodule update --init metroproto
+
       - name: Prepare CI Gradle
         uses: ./.github/actions/prepare-ci-gradle
         with:
