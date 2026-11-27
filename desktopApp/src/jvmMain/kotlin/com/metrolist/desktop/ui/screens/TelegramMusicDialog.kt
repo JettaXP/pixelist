@@ -139,7 +139,7 @@ fun TelegramMusicDialog(
                 }
                 Spacer(Modifier.height(12.dp))
                 when (authState) {
-                    is TelegramAuthState.LoggedOut, is TelegramAuthState.Closing ->
+                    is TelegramAuthState.LoggedOut, is TelegramAuthState.Closing -> {
                         TelegramLoginForm(
                             apiId = apiId,
                             apiHash = apiHash,
@@ -150,27 +150,33 @@ fun TelegramMusicDialog(
                             onLogin = {
                                 val parsedApiId = apiId.toIntOrNull()
                                 when {
-                                    parsedApiId == null || apiHash.isBlank() ->
+                                    parsedApiId == null || apiHash.isBlank() -> {
                                         inlineError = "Enter your Telegram API ID and API hash (my.telegram.org)."
+                                    }
 
-                                    phoneNumber.isBlank() -> inlineError = "Enter your phone number in international format."
+                                    phoneNumber.isBlank() -> {
+                                        inlineError = "Enter your phone number in international format."
+                                    }
+
                                     else -> {
                                         inlineError = null
-                                        credentials.copy(
+                                        TelegramCredentials(
                                             apiId = apiId,
                                             apiHash = apiHash,
                                             phoneNumber = phoneNumber,
                                         ).save()
                                         coroutineScope.launch {
-                                            TelegramMusicClient.login(parsedApiId, apiHash, phoneNumber)
+                                            TelegramMusicClient
+                                                .login(parsedApiId, apiHash, phoneNumber)
                                                 .onFailure { failure -> inlineError = failure.message }
                                         }
                                     }
                                 }
                             },
                         )
+                    }
 
-                    is TelegramAuthState.Failed ->
+                    is TelegramAuthState.Failed -> {
                         TelegramLoginForm(
                             apiId = apiId,
                             apiHash = apiHash,
@@ -183,24 +189,27 @@ fun TelegramMusicDialog(
                                 if (parsedApiId != null && apiHash.isNotBlank() && phoneNumber.isNotBlank()) {
                                     inlineError = null
                                     coroutineScope.launch {
-                                        TelegramMusicClient.login(parsedApiId, apiHash, phoneNumber)
+                                        TelegramMusicClient
+                                            .login(parsedApiId, apiHash, phoneNumber)
                                             .onFailure { failure -> inlineError = failure.message }
                                     }
                                 }
                             },
                         )
+                    }
 
-                    TelegramAuthState.Connecting ->
+                    TelegramAuthState.Connecting -> {
                         Column(
                             modifier = Modifier.fillMaxWidth().padding(top = 32.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             CircularProgressIndicator()
                             Spacer(Modifier.height(16.dp))
-                            Text("Connecting to Telegram…")
+                            Text("Connecting to Telegram\u2026")
                         }
+                    }
 
-                    TelegramAuthState.WaitCode ->
+                    TelegramAuthState.WaitCode -> {
                         TelegramCodeForm(
                             code = loginCode,
                             onCodeChange = { value -> loginCode = value.filter(Char::isDigit).take(8) },
@@ -209,8 +218,9 @@ fun TelegramMusicDialog(
                                 TelegramMusicClient.submitCode(loginCode)
                             },
                         )
+                    }
 
-                    TelegramAuthState.WaitPassword ->
+                    TelegramAuthState.WaitPassword -> {
                         TelegramPasswordForm(
                             password = loginPassword,
                             onPasswordChange = { value -> loginPassword = value },
@@ -219,6 +229,7 @@ fun TelegramMusicDialog(
                                 TelegramMusicClient.submitPassword(loginPassword)
                             },
                         )
+                    }
 
                     TelegramAuthState.Ready -> {
                         val currentChat = selectedChat

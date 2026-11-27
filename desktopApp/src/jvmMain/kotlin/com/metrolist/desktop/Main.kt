@@ -128,9 +128,9 @@ import com.metrolist.desktop.ui.screens.LastFmArtistBrowser
 import com.metrolist.desktop.ui.screens.LastFmArtistBrowserHost
 import com.metrolist.desktop.ui.screens.LoginDialog
 import com.metrolist.desktop.ui.screens.settings.ApplicationLogsDialog
-import com.metrolist.desktop.ui.screens.TelegramMusicDialog
 import com.metrolist.desktop.ui.screens.settings.IntegrationsOverlay
 import com.metrolist.desktop.ui.screens.settings.SettingsOverlay
+import com.metrolist.desktop.ui.screens.TelegramMusicDialog
 import com.metrolist.desktop.ui.theme.MetrolistTheme
 import com.metrolist.desktop.utils.AppLogger
 import com.metrolist.desktop.utils.ComposeTrayManager

@@ -23,10 +23,15 @@ data class TelegramTrack(
 
 sealed interface TelegramAuthState {
     data object LoggedOut : TelegramAuthState
+
     data object Connecting : TelegramAuthState
+
     data object WaitCode : TelegramAuthState
+
     data object WaitPassword : TelegramAuthState
+
     data object Ready : TelegramAuthState
+
     data object Closing : TelegramAuthState
 
     data class Failed(

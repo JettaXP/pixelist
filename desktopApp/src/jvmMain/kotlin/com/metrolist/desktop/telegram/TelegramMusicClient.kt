@@ -181,7 +181,9 @@ object TelegramMusicClient {
                 )
             }
 
-            else -> null
+            else -> {
+                null
+            }
         }
 
     private fun onAuthorizationState(authorizationState: TdApi.AuthorizationState) {
@@ -193,13 +195,17 @@ object TelegramMusicClient {
                 -> TelegramAuthState.Connecting
 
                 is TdApi.AuthorizationStateWaitCode -> TelegramAuthState.WaitCode
+
                 is TdApi.AuthorizationStateWaitPassword -> TelegramAuthState.WaitPassword
+
                 is TdApi.AuthorizationStateReady -> TelegramAuthState.Ready
+
                 is TdApi.AuthorizationStateLoggingOut,
                 is TdApi.AuthorizationStateClosing,
                 -> TelegramAuthState.Closing
 
                 is TdApi.AuthorizationStateClosed -> TelegramAuthState.LoggedOut
+
                 else -> TelegramAuthState.Connecting
             }
     }
