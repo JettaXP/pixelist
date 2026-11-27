@@ -18,6 +18,9 @@ import it.tdlight.client.TDLibSettings
 import it.tdlight.client.TelegramError
 import it.tdlight.jni.TdApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -107,10 +110,16 @@ object TelegramMusicClient {
                     limit = 200
                 }
             val chats = activeClient.send(request).await() as? TdApi.Chats
-            (chats?.chatIds ?: LongArray(0)).mapNotNull { chatId ->
-                val chat = activeClient.send(TdApi.GetChat(chatId)).await() as? TdApi.Chat
-                chat?.let { TelegramChatInfo(it.id, it.title) }
-            }
+            val chatIds = chats?.chatIds ?: LongArray(0)
+            coroutineScope {
+                chatIds
+                    .map { chatId ->
+                        async {
+                            val chat = activeClient.send(TdApi.GetChat(chatId)).await() as? TdApi.Chat
+                            chat?.let { TelegramChatInfo(it.id, it.title) }
+                        }
+                    }.awaitAll()
+            }.filterNotNull()
         }
 
     suspend fun tracks(chatId: Long): List<TelegramTrack> =
