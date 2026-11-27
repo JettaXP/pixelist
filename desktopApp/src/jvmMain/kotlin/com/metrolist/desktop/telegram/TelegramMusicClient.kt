@@ -107,7 +107,7 @@ object TelegramMusicClient {
                     limit = 200
                 }
             val chats = activeClient.send(request).await() as? TdApi.Chats
-            chats?.chatIds.orEmpty().mapNotNull { chatId ->
+            (chats?.chatIds ?: LongArray(0)).mapNotNull { chatId ->
                 val chat = activeClient.send(TdApi.GetChat(chatId)).await() as? TdApi.Chat
                 chat?.let { TelegramChatInfo(it.id, it.title) }
             }
@@ -168,14 +168,14 @@ object TelegramMusicClient {
             }
 
             is TdApi.MessageVoiceNote -> {
-                val voice = content.voice
+                val voiceNote = content.voiceNote
                 TelegramTrack(
                     chatId = message.chatId,
                     messageId = message.id,
                     title = "Voice message",
                     artist = "",
-                    durationSeconds = voice.duration,
-                    fileId = voice.voice.id,
+                    durationSeconds = voiceNote.duration,
+                    fileId = voiceNote.voice.id,
                     fileName = "voice-${message.id}.ogg",
                     isVoiceNote = true,
                 )
