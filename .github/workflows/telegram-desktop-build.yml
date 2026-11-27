@@ -1,0 +1,69 @@
+name: Telegram Desktop Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - "vibe/**"
+
+concurrency:
+  group: telegram-desktop-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  desktop:
+    name: Linux desktop build with Telegram music
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Prepare CI Gradle
+        uses: ./.github/actions/prepare-ci-gradle
+        with:
+          cache-scope: telegram-desktop-build
+          persist-configuration-cache: 'false'
+
+      - name: Install desktop runtime libraries
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libasound2t64 \
+            libdrm2 \
+            libegl1 \
+            libfontconfig1 \
+            libfreetype6 \
+            libgl1 \
+            libpulse0 \
+            libva-drm2 \
+            libva2 \
+            libx11-6 \
+            libxcb-shm0
+
+      - name: Build and verify desktop app
+        shell: bash
+        env:
+          JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
+          GRADLE_OPTS: >-
+            -Dorg.gradle.jvmargs="-XX:MaxRAMPercentage=60.0 -XX:+UseParallelGC -Dfile.encoding=UTF-8"
+        run: |
+          set -euo pipefail
+          ./gradlew \
+            :desktopApp:ktlintCheck \
+            :desktopApp:jvmTest \
+            :desktopApp:compileKotlinJvm \
+            :desktopApp:assemble \
+            --no-daemon -Pmetrolist.sourceRevision=
+
+      - name: Upload desktop JAR
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: metrolist-desktop-telegram
+          path: desktopApp/build/libs/*.jar
+          if-no-files-found: error

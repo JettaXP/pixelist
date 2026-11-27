@@ -48,6 +48,13 @@ dependencyResolutionManagement {
             name = "FDD Maven"
             url = uri("https://maven.firstdark.dev/releases")
         }
+        maven {
+            name = "TDLight Maven"
+            url = uri("https://mvn.mchv.eu/repository/mchv/")
+            content {
+                includeGroup("it.tdlight")
+            }
+        }
     }
 }
 

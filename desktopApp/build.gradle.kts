@@ -305,6 +305,19 @@ kotlin {
                 }
                 arm64WebViewJar?.let { implementation(files(it)) }
                 implementation(libs.slf4j.simple)
+                implementation("it.tdlight:tdlight-java:3.5.9+td.1.8.68")
+                implementation("it.tdlight:tdlight-natives:4.0.597") {
+                    artifact { classifier = "linux_amd64_gnu_ssl3" }
+                }
+                implementation("it.tdlight:tdlight-natives:4.0.597") {
+                    artifact { classifier = "linux_arm64_gnu_ssl3" }
+                }
+                implementation("it.tdlight:tdlight-natives:4.0.597") {
+                    artifact { classifier = "windows_amd64" }
+                }
+                implementation("it.tdlight:tdlight-natives:4.0.597") {
+                    artifact { classifier = "macos_arm64" }
+                }
                 implementation(libs.sentry)
 
                 implementation(libs.ktor.client.core)

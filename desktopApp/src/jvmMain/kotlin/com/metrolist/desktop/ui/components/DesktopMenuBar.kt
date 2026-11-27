@@ -247,6 +247,11 @@ fun FrameWindowScope.DesktopMenuBar(
                 shortcut = KeyShortcut(Key.N, meta = true),
             )
             Item(
+                text = "Telegram Music",
+                icon = menuIcon(musicNotePainter),
+                onClick = { UiState.showTelegramMusic = true },
+            )
+            Item(
                 text = stringResource(Res.string.search),
                 icon = menuIcon(searchPainter),
                 onClick = { triggerSearchShortcut() },

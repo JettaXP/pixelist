@@ -106,6 +106,7 @@ object UiState {
     var showShortcutsDialog by mutableStateOf(false)
 
     var showIntegrationsSettings by mutableStateOf(false)
+    var showTelegramMusic by mutableStateOf(false)
     var integrationsInitialPage by mutableStateOf<SettingsPageId?>(null)
 
     var showTokenLogin by mutableStateOf(false)

@@ -128,6 +128,7 @@ import com.metrolist.desktop.ui.screens.LastFmArtistBrowser
 import com.metrolist.desktop.ui.screens.LastFmArtistBrowserHost
 import com.metrolist.desktop.ui.screens.LoginDialog
 import com.metrolist.desktop.ui.screens.settings.ApplicationLogsDialog
+import com.metrolist.desktop.ui.screens.TelegramMusicDialog
 import com.metrolist.desktop.ui.screens.settings.IntegrationsOverlay
 import com.metrolist.desktop.ui.screens.settings.SettingsOverlay
 import com.metrolist.desktop.ui.theme.MetrolistTheme
@@ -420,6 +421,12 @@ private fun DesktopWindowScope.AppContent(
             DesktopPageBoundTokenHost(GlobalContext.get().get<DesktopPageBoundTokenRuntime>())
             if (UiState.showIntegrationsSettings) {
                 IntegrationsOverlay(colorScheme)
+            }
+            if (UiState.showTelegramMusic) {
+                TelegramMusicDialog(
+                    colorScheme = colorScheme,
+                    onDismissRequest = { UiState.showTelegramMusic = false },
+                )
             }
             PopupVisibility(visible = UiState.showLogViewer) {
                 ApplicationLogsDialog(onDismiss = { UiState.showLogViewer = false })
